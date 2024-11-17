@@ -22,45 +22,43 @@ import com.example.Student.Service.StudentService;
 @RestController
 @RequestMapping("/api/student")
 @CrossOrigin(origins = "*")
-
 public class StudentController {
 
     @Autowired
     private StudentService studentService;
-       
-   
+
     @PostMapping
-   
-    public ResponseEntity<Student> saveStudent(@RequestBody Student student){
-    return new 
-    ResponseEntity<Student>(studentService.saveStudent(student), 
-   HttpStatus.CREATED);
-    }
-   
-    @GetMapping
-    public List<Student> getAllStudent(){
-    return studentService.getAllStudent();
-    }
-   
-    @GetMapping("{id}")
-    // localhost:8080/api/student/1
-    public ResponseEntity<Student> getStudentById(@PathVariable("id") long studentID){
-    return new 
-   ResponseEntity<Student>(studentService.getStudentById(studentID),HttpStatus.OK);
-    }
-   
-    @PutMapping("{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable("id") long id,@RequestBody Student student){
-    return new 
-   ResponseEntity<Student>(studentService.updateStudent(student,id),HttpStatus.OK);
-    }
-   
-   //Delete Rest Api
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteStudent(@PathVariable("id") long id){
-    //delete employee from db
-    studentService.deleteStudent(id);
-    return new ResponseEntity<String>("Student deleted Successfully.",HttpStatus.OK);
+    public ResponseEntity<Student> saveStudent(@Valid @RequestBody Student student) {
+        return new ResponseEntity<>(studentService.saveStudent(student), HttpStatus.CREATED);
     }
 
+    @GetMapping
+    public ResponseEntity<List<Student>> getAllStudent() {
+        return new ResponseEntity<>(studentService.getAllStudent(), HttpStatus.OK);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<Student> getStudentById(@PathVariable("id") long studentID) {
+        return new ResponseEntity<>(studentService.getStudentById(studentID), HttpStatus.OK);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Student> updateStudent(@PathVariable("id") long id, @Valid @RequestBody Student student) {
+        return new ResponseEntity<>(studentService.updateStudent(student, id), HttpStatus.OK);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> deleteStudent(@PathVariable("id") long id) {
+        studentService.deleteStudent(id);
+        return new ResponseEntity<>("Student deleted successfully.", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/year/{year}")
+    public ResponseEntity<String> deleteStudentsByYear(@PathVariable("year") long yearOfEnrollment) {
+        studentService.deleteStudentsByYear(yearOfEnrollment);
+        return new ResponseEntity<>("Students enrolled in year " + yearOfEnrollment + " have been deleted.", HttpStatus.OK);
 }
+
+}
+
+
